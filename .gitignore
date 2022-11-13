@@ -1,3 +1,5 @@
 AIPF Emergenetics Profile/
 app_iras.py
 keys/
+*.pyc
+aipf_names.csv

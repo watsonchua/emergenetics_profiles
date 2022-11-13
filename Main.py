@@ -18,8 +18,8 @@ import plotly.express as px
 def read_data():
     if 'df_profile' not in st.session_state:
         st.session_state['df_profile'] = pd.read_csv('./profile.csv').sort_values('NAME', ascending=True)
-    if 'df_names' not in st.session_state:
-        st.session_state['df_names'] = pd.read_csv('./aipf_names.csv').sort_values('Name', ascending=True)
+    # if 'df_names' not in st.session_state:
+        # st.session_state['df_names'] = pd.read_csv('./aipf_names.csv').sort_values('Name', ascending=True)
     # return df.sort_values('NAME', ascending=True)
 
 # def make_grid(num_rows,num_cols):
