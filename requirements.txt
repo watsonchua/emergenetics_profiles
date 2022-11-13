@@ -1,4 +1,4 @@
 PyPDF2==2.11.1
 pandas==1.4.4
-scikit-learn==1.2.2
+scikit-learn==1.1.2
 plotly==5.11.0
