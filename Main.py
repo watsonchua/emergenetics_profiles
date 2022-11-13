@@ -7,27 +7,21 @@ import matplotlib.pyplot as plt
 import math
 import plotly.express as px
 
-
-
-# secrets = toml.load('.streamlit/secrets.toml')
-# es_username = secrets['es_username']
-# es_password = secrets['es_password']
-
-
 # @st.cache(ttl=1*60*60)
 def read_data():
-    if 'df_profile' not in st.session_state:
-        st.session_state['df_profile'] = pd.read_csv('./profile.csv').sort_values('NAME', ascending=True)
-    # if 'df_names' not in st.session_state:
-        # st.session_state['df_names'] = pd.read_csv('./aipf_names.csv').sort_values('Name', ascending=True)
-    # return df.sort_values('NAME', ascending=True)
+    secrets = toml.load('.streamlit/secrets.toml')
+    aws_access_key_id = secrets['aws_access_key_id']
+    aws_secret_access_key = secrets['aws_secret_access_key']
 
-# def make_grid(num_rows,num_cols):
-#     grid = [0]*num_rows
-#     for i in range(num_rows):
-#         with st.container():
-#             grid[i] = st.columns(num_cols)
-#     return grid
+    if 'df_profile' not in st.session_state:
+        st.session_state['df_profile'] = pd.read_csv(
+            f"s3://aipf-emergenetics/profile.csv",
+                storage_options={
+                    "key": aws_access_key_id,
+                    "secret": aws_secret_access_key
+                }
+                ).sort_values('NAME', ascending=True)
+            # './profile.csv')
 
 def main():
     read_data()
