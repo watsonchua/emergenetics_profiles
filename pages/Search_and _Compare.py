@@ -7,6 +7,8 @@ import matplotlib.pyplot as plt
 import math
 from Main import read_data
 from sklearn.metrics.pairwise import cosine_similarity
+import plotly.express as px
+
 
 
 # secrets = toml.load('.streamlit/secrets.toml')
@@ -40,7 +42,8 @@ def main():
         )
     st.title("AIPF Emergenetics Profiles")
 
-    labels = ['ANALYTICAL', 'CONCEPTUAL','STRUCTURAL', 'SOCIAL']
+    attributes = ['Analytical', 'Conceptual','Structural', 'Social']
+    behavioural = ['Expressiveness', 'Assertiveness','Flexibility']
     
 
     st.sidebar.title("Filters")
@@ -49,15 +52,15 @@ def main():
 
     names_container.info('Select one profile to see profiles most similar to it.   \n  \nSelect two profiles to see their similarity score.  \n  \nSelect three or more profiles for visual comparison.')
 
-    all_names = ['All'] + df_profiles['NAME'].to_list()
+    all_names = ['All'] + df_profiles['Name'].to_list()
     names_filter = names_container.multiselect('Name(s)', all_names, default=all_names)
     if 'All' in names_filter:
         names_filter = all_names
 
 
     with st.container():
-        df_filtered = df_profiles[df_profiles['NAME'].isin(names_filter)]
-        if len(df_filtered) < 3:
+        df_filtered = df_profiles[df_profiles['Name'].isin(names_filter)]
+        if len(df_filtered) == 2:
             num_rows = 1
             num_cols = max(1, len(df_filtered))
         else:
@@ -69,25 +72,36 @@ def main():
         col_no = 0
         counter = 0       
         for index, row in df_filtered.iterrows():
-            row_values = row[labels].values
+            attribute_values = row[attributes].values
             fig, ax = plt.subplots()
-            ax.pie(row_values, labels=labels, autopct='%1.0f%%', startangle=90)
+            ax.pie(attribute_values, labels=attributes, autopct='%1.0f%%', startangle=90)
             ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
 
             cell = grid[row_no][col_no]
-            cell.write(row['NAME'])
+            cell.write(row['Name'])
             cell.pyplot(fig)
             plt.close(fig)
+
+
+            # behavourial_values = row[behavioural].values
+            # cell.bar_chart(behavourial_values, x=behavioural)
+            # fig1, ax1 = plt.subplots()
+            # fig1 = px.bar(data_frame=row[behavioural], orientation='h')
+            # cell.pyplot(fig1)
+            # plt.close(fig1)
+
+
 
             counter += 1
             row_no = counter // num_cols
             col_no = counter % num_cols
         
         if len(df_filtered) == 2:
-            compare_vectors = df_filtered[labels].to_numpy()
+            compare_vectors = df_filtered[attributes].to_numpy()
             similarity_score = cosine_similarity(compare_vectors[0].reshape(1,-1), compare_vectors[1].reshape(1,-1))
             with st.container():
-                st.write('Similarity: ' + "{:.3f}".format(similarity_score[0][0]))
+                _, column_2, _ = st.columns(3)
+                column_2.header('Similarity: ' + "{:.3f}".format(similarity_score[0][0]))
 
         
 

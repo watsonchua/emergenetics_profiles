@@ -20,7 +20,7 @@ def read_data():
                     "key": aws_access_key_id,
                     "secret": aws_secret_access_key
                 }
-                ).sort_values('NAME', ascending=True)
+                ).sort_values('Name', ascending=True)
             # './profile.csv')
 
 def main():
@@ -34,24 +34,38 @@ def main():
         )
     st.title("AIPF Emergenetics Profiles")
 
-    labels = ['ANALYTICAL', 'CONCEPTUAL','STRUCTURAL', 'SOCIAL']
+    attributes = ['Analytical', 'Conceptual','Structural', 'Social']
+    attribute_percentile = ['Analytical Percentile', 'Conceptual Percentile','Structural Percentile', 'Social Percentile']
+    behaviour_percentile = ['Expressiveness', 'Assertiveness','Flexibility']
+
 
     with st.container():
-        mean_values = df_profiles[labels].mean().to_numpy()
+        mean_values = df_profiles[attributes].mean().to_numpy()
 
         fig, ax = plt.subplots()
-        ax.pie(mean_values, labels=labels, autopct='%1.2f%%', startangle=90)
+        ax.pie(mean_values, labels=attributes, autopct='%1.2f%%', startangle=90)
         ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
         
-        st.write('AIPF Overall')
-        st.pyplot(fig)
+        st.header('AIPF Overall')
+        _, column_2, _ = st.columns(3)
+        column_2.pyplot(fig)
         plt.close(fig)
 
-    for l in labels:
-        with st.expander('Top 5: ' + l.title()):
-            df_top = df_profiles.nlargest(5, l).sort_values(l, ascending=True)
-            fig=px.bar(df_top, y='NAME', x=l, orientation='h',color=l)
-            st.write(fig)
+    with st.container():
+        st.header('Attribute')
+        for l in attribute_percentile:
+            with st.expander('Top 5: ' + l.title()):
+                df_top = df_profiles.nlargest(5, l).sort_values(l, ascending=True)
+                fig=px.bar(df_top, y='Name', x=l, orientation='h',color=l)
+                st.write(fig)
+
+    with st.container():
+        st.header('Behavioural')
+        for l in behaviour_percentile:
+            with st.expander('Top 5: ' + l.title()):
+                df_top = df_profiles.nlargest(5, l).sort_values(l, ascending=True)
+                fig=px.bar(df_top, y='Name', x=l, orientation='h',color=l)
+                st.write(fig)
 
 
     
