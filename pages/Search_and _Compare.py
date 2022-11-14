@@ -44,8 +44,10 @@ def main():
     
 
     st.sidebar.title("Filters")
-
+    
     names_container = st.sidebar.container()
+
+    names_container.info('Select one profile to see profiles most similar to it.   \n  \nSelect two profiles to see their similarity score.  \n  \nSelect three or more profiles for visual comparison.')
 
     all_names = ['All'] + df_profiles['NAME'].to_list()
     names_filter = names_container.multiselect('Name(s)', all_names, default=all_names)

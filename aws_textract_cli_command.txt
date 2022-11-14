@@ -1,0 +1,6 @@
+aws textract start-document-text-detection \
+    --document-location "{\"S3Object\":{\"Bucket\":\"aipf-emergenetics\",\"Name\":\"EmergeneticsProfileandNarrative.pdf\"}}" \
+    --region ap-southeast-1
+
+aws textract get-document-text-detection \
+    --job-id 2af981272e3a9c0a0e2556bfe2a4cc8a1b6c9437002edb70eb3821cf7bbcb71b
