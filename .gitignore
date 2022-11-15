@@ -5,3 +5,4 @@ keys/
 aipf_names.csv
 profile.csv
 .streamlit/
+cosine_similarity.npy
