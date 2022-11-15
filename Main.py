@@ -47,28 +47,40 @@ def main():
         ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
         
         st.header('AIPF Overall')
-        _, column_2, _ = st.columns(3)
-        column_2.pyplot(fig)
+        column_1, column_2 = st.columns(2)
+        column_1.pyplot(fig)
         plt.close(fig)
 
     with st.container():
-        st.header('Attribute')
+        st.header('Attribute Leaderboard')
         for l in attribute_percentile:
-            with st.expander('Top 5: ' + l.title()):
-                df_top = df_profiles.nlargest(5, l).sort_values(l, ascending=True)
-                fig=px.bar(df_top, y='Name', x=l, orientation='h',color=l)
-                st.write(fig)
+            write_top_and_bottom(df_profiles, l)
+            
 
     with st.container():
-        st.header('Behavioural')
+        st.header('Behavioural Leaderboard')
         for l in behaviour_percentile:
-            with st.expander('Top 5: ' + l.title()):
-                df_top = df_profiles.nlargest(5, l).sort_values(l, ascending=True)
-                fig=px.bar(df_top, y='Name', x=l, orientation='h',color=l)
-                st.write(fig)
+            write_top_and_bottom(df_profiles, l)
+            
+def write_top_and_bottom(df_prof, label):
+    df_top = df_prof.nlargest(5, label).sort_values(label, ascending=True)
+    df_bottom = df_prof.nsmallest(5, label).sort_values(label, ascending=True)
+    fig_top =px.bar(df_top, y='Name', x=label, orientation='h',color=label, range_x=[0,100])
+    fig_bottom =px.bar(df_bottom, y='Name', x=label, orientation='h',color=label, range_x=[0,100])
 
+    with st.expander(label.title().replace('Percentile', '')):
+        st.markdown('#### Top 5')
+        st.write(fig_top)
+        st.markdown('#### Bottom 5')
+        st.write(fig_bottom)
 
+    # st.markdown('#### ' + label.title().replace('Percentile', ''))
+
+    # with st.expander('Top 5'):
+    #     st.write(fig_top)
     
+    # with st.expander('Bottom 5'):
+    #     st.write(fig_bottom)    
    
 
 
