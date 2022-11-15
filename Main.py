@@ -76,25 +76,34 @@ def main():
     with st.container():
         st.header('Attribute Leaderboard')
         for l in attribute_percentile:
-            write_top_and_bottom(df_profiles, l)
+            write_top_ranked(df_profiles, l)
             
 
     with st.container():
         st.header('Behavioural Leaderboard')
         for l in behaviour_percentile:
-            write_top_and_bottom(df_profiles, l)
+            write_top_ranked(df_profiles, l)
             
-def write_top_and_bottom(df_prof, label, top_k=10):
-    df_top = df_prof.nlargest(top_k, label).sort_values(label, ascending=True)
-    df_bottom = df_prof.nsmallest(top_k, label).sort_values(label, ascending=True)
+def write_top_ranked(df_prof, label):
+    df_top = df_prof.sort_values(label, ascending=True)
     fig_top = px.bar(df_top, y='Name', x=label, orientation='h',color=label, range_x=[0,100])
-    fig_bottom = px.bar(df_bottom, y='Name', x=label, orientation='h',color=label, range_x=[0,100])
+    fig_top.update_layout(yaxis={"dtick":1})
 
     with st.expander(label.title().replace('Percentile', '')):
-        st.markdown('#### Top 10')
         st.write(fig_top)
-        st.markdown('#### Bottom 10')
-        st.write(fig_bottom)
+
+
+
+    # df_top = df_prof.nlargest(top_k, label).sort_values(label, ascending=True)
+    # df_bottom = df_prof.nsmallest(top_k, label).sort_values(label, ascending=True)
+    # fig_top = px.bar(df_top, y='Name', x=label, orientation='h',color=label, range_x=[0,100])
+    # fig_bottom = px.bar(df_bottom, y='Name', x=label, orientation='h',color=label, range_x=[0,100])
+
+    # with st.expander(label.title().replace('Percentile', '')):
+        # st.markdown('#### Top 10')
+        # st.write(fig_top)
+        # st.markdown('#### Bottom 10')
+        # st.write(fig_bottom)
 
 if __name__ == "__main__":
     main()
