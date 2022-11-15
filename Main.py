@@ -87,8 +87,8 @@ def main():
 def write_top_and_bottom(df_prof, label, top_k=10):
     df_top = df_prof.nlargest(top_k, label).sort_values(label, ascending=True)
     df_bottom = df_prof.nsmallest(top_k, label).sort_values(label, ascending=True)
-    fig_top =px.bar(df_top, y='Name', x=label, orientation='h',color=label, range_x=[0,100])
-    fig_bottom =px.bar(df_bottom, y='Name', x=label, orientation='h',color=label, range_x=[0,100])
+    fig_top = px.bar(df_top, y='Name', x=label, orientation='h',color=label, range_x=[0,100])
+    fig_bottom = px.bar(df_bottom, y='Name', x=label, orientation='h',color=label, range_x=[0,100])
 
     with st.expander(label.title().replace('Percentile', '')):
         st.markdown('#### Top 10')

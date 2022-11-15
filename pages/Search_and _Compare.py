@@ -78,7 +78,8 @@ def main():
             ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
 
             cell = grid[row_no][col_no]
-            cell.write(row['Name'])
+            cell.write('**'+row['Name'] + '**')
+            cell.write('"'+ row['Motto'] + '"')
             cell.pyplot(fig)
             plt.close(fig)
 

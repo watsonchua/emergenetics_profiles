@@ -13,6 +13,7 @@ conceptual_pattern = r"CONCEPTUAL = (\d+)%"
 analytical_pattern = r"ANALYTICAL = (\d+)%"
 structural_pattern = r"STRUCTURAL = (\d+)%"
 social_pattern = r"SOCIAL = (\d+)%"
+motto_pattern = r"\nYour Motto: (.*)\n"
 
 other_patterns = r"Expressiveness (\d+)%ile\n\nAssertiveness (\d+)%ile\n\nFlexibility (\d+)%ile"
 name_pattern = r"Congratulations,(.*)!"
@@ -25,9 +26,12 @@ def extract_values(text):
     social_percentage = re.findall(social_pattern, text)[0]
     conceptual_percentage = re.findall(conceptual_pattern, text)[0]
     expressiveness, assertiveness, flexibility = re.findall(other_patterns, text)[0]
+    motto = re.findall(motto_pattern, text)[0][1:-1]
+
 
     return {
         'Name': name.title().strip(),
+        'Motto': motto.strip(),
         'Analytical': analytical_percentage, 
         'Conceptual': conceptual_percentage,
         'Structural': structural_percentage, 
