@@ -65,3 +65,5 @@ def main():
     np.save('cosine_similarity.npy', cos_sim)
 
 
+if __name__ == "__main__":
+    main()

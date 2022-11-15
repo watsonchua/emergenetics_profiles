@@ -60,9 +60,9 @@ def main():
 
     with st.container():
         df_filtered = df_profiles[df_profiles['Name'].isin(names_filter)]
-        if len(df_filtered) == 2:
+        if len(df_filtered) < 3:
             num_rows = 1
-            num_cols = max(1, len(df_filtered))
+            num_cols = 2
         else:
             num_cols = 3
             num_rows = math.ceil(len(df_filtered)/num_cols)
