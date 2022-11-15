@@ -3,7 +3,6 @@ import re
 from tika import parser
 import pandas as pd
 from sklearn.metrics.pairwise import cosine_similarity
-import numpy as np
 
 
 percentile_patterns = r"The Percentiles\n\nAnalytical (\d+)%ile\n\nStructural (\d+)%ile\n\nSocial (\d+)%ile\n\nConceptual (\d+)%ile\n\nBar charts in four colors show your Thinking Attributes in percentiles."
@@ -66,7 +65,8 @@ def main():
 
     # create similarity matrix
     cos_sim = cosine_similarity(df_profiles[['Analytical', 'Conceptual', 'Structural', 'Social']])
-    np.save('cosine_similarity.npy', cos_sim)
+    df_cos = pd.DataFrame(cos_sim, index=df_profiles['Name'].values, columns=df_profiles['Name'].values)
+    df_cos.to_csv('cosine_similarity.csv')
 
 
 if __name__ == "__main__":

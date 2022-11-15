@@ -1,13 +1,9 @@
 import streamlit as st
 import pandas as pd
-from datetime import datetime
 from time import perf_counter
 import toml
 import matplotlib.pyplot as plt
-import math
 import plotly.express as px
-import numpy as np
-import boto3
 
 # @st.cache(ttl=1*60*60)
 def read_data():
@@ -15,24 +11,26 @@ def read_data():
     aws_access_key_id = secrets['aws_access_key_id']
     aws_secret_access_key = secrets['aws_secret_access_key']
 
-    s3_client = boto3.client('s3', 
-        aws_access_key_id=aws_access_key_id,
-        aws_secret_access_key=aws_secret_access_key
-    )
-
     if 'df_profile' not in st.session_state:
         st.session_state['df_profile'] = pd.read_csv(
             f"s3://aipf-emergenetics/profile.csv",
+            storage_options={
+                "key": aws_access_key_id,
+                "secret": aws_secret_access_key
+            }
+            ).sort_values('Name', ascending=True)
+
+
+    if 'df_cosine_similarity' not in st.session_state:
+        st.session_state['df_cosine_similarity'] = pd.read_csv(
+                f"s3://aipf-emergenetics/cosine_similarity.csv",
                 storage_options={
                     "key": aws_access_key_id,
                     "secret": aws_secret_access_key
-                }
-                ).sort_values('Name', ascending=True)
-
-
-    # if 'cosine_similarity_matrix' not in st.session_state:
-    #     s3_client.download_file('aipf-emergenetics', 'cosine_similarity.npy')
-    #     st.session_state['cosine_similarity'] = np.load('cosine_similarity.npy')
+                },
+                index_col=0,
+                header=0
+            )
 
 
 

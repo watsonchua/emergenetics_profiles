@@ -10,20 +10,6 @@ from sklearn.metrics.pairwise import cosine_similarity
 import plotly.express as px
 
 
-
-# secrets = toml.load('.streamlit/secrets.toml')
-# es_username = secrets['es_username']
-# es_password = secrets['es_password']
-
-
-# @st.cache(ttl=1*60*60)
-# def read_data():
-#     if 'df_profile' not in st.session_state:
-#         st.session_state['df_profile'] = pd.read_csv('./profile.csv').sort_values('NAME', ascending=True)
-#     if 'df_names' not in st.session_state:
-#         st.session_state['df_names'] = pd.read_csv('./aipf_names.csv').sort_values('Name', ascending=True)
-#     # return df.sort_values('NAME', ascending=True)
-
 def make_grid(num_rows,num_cols):
     grid = [0]*num_rows
     for i in range(num_rows):
@@ -35,6 +21,7 @@ def main():
     read_data()
 
     df_profiles = st.session_state['df_profile']
+    df_cosine_similarity = st.session_state['df_cosine_similarity']
 
     st.set_page_config(
         layout="wide",
@@ -50,7 +37,7 @@ def main():
     
     names_container = st.sidebar.container()
 
-    names_container.info('Select one profile to see profiles most similar to it.   \n  \nSelect two profiles to see their similarity score.  \n  \nSelect three or more profiles for visual comparison.')
+    names_container.info('Select one profile to see profiles most similar/dissimilar to it.   \n  \nSelect two profiles to see their similarity score.  \n  \nSelect three or more profiles for visual comparison.')
 
     all_names = ['All'] + df_profiles['Name'].to_list()
     names_filter = names_container.multiselect('Name(s)', all_names, default=all_names)
@@ -98,11 +85,27 @@ def main():
             col_no = counter % num_cols
         
         if len(df_filtered) == 2:
-            compare_vectors = df_filtered[attributes].to_numpy()
-            similarity_score = cosine_similarity(compare_vectors[0].reshape(1,-1), compare_vectors[1].reshape(1,-1))
+            # compare_vectors = df_filtered[attributes].to_numpy()
+            # similarity_score = cosine_similarity(compare_vectors[0].reshape(1,-1), compare_vectors[1].reshape(1,-1))
             with st.container():
                 _, column_2, _ = st.columns(3)
-                column_2.header('Similarity: ' + "{:.3f}".format(similarity_score[0][0]))
+                name_1 = df_filtered.iloc[0]['Name']
+                name_2 = df_filtered.iloc[1]['Name']
+                # print(df_cosine_similarity)
+                # print(df_cosine_similarity.columns)
+                column_2.header('Similarity: ' + "{:.3f}".format(df_cosine_similarity[name_1][name_2]))
+
+        if len(df_filtered) == 1:
+            name = df_filtered.iloc[0]['Name']
+            df_most_similar = df_cosine_similarity[name].nlargest(6)[1:]
+            df_most_dissimilar = df_cosine_similarity[name].nsmallest(5)
+
+            sim_cell = grid[0][1]
+            sim_cell.write('Most Similar')
+            sim_cell.table(df_most_similar.to_frame('Score'))
+
+            sim_cell.write('Most Different')
+            sim_cell.table(df_most_dissimilar.to_frame('Score').sort_values('Score', ascending=False))
 
         
 
