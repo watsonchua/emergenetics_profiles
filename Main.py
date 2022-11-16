@@ -64,9 +64,12 @@ def main():
         column_1.pyplot(fig)
         plt.close(fig)
 
-
-        fig_behavioural =px.bar(df_mean_behaviour.transpose().to_frame(name='Mean Percentile'), x='Mean Percentile', orientation='h', color='Mean Percentile', range_x=[0,100])
-        st.write(fig_behavioural)
+        df_plot_mean = df_mean_behaviour.transpose().to_frame(name='Mean Percentile')
+        df_plot_mean['Behaviour'] = df_plot_mean.index
+        fig_behavioural =px.bar(df_plot_mean, y='Behaviour', x='Mean Percentile', orientation='h', text_auto=True, color='Behaviour')
+        column_2.write(fig_behavioural)
+        # fig_behavioural =px.bar(df_mean_behaviour.transpose().to_frame(name='Mean Percentile'), x='Mean Percentile', orientation='h', color='Mean Percentile', range_x=[0,100])
+        # st.write(fig_behavioural)
 
 
 
