@@ -65,7 +65,13 @@ def main():
             ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
 
             cell = grid[row_no][col_no]
-            cell.write('**'+row['Name'] + '**')
+            if row['Name'] == 'Watson Chua':
+                # cell_col_1, cell_col_2 = cell.columns(2)
+                # cell.write('**'+row['Name'] + '**')
+                # cell.image('images/blue_tick.png', width=25)
+                cell.markdown('<b>Watson Chua</b> <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Twitter_Verified_Badge.svg/512px-Twitter_Verified_Badge.svg.png" width="20"/>', unsafe_allow_html=True)
+            else:
+                cell.write('**'+row['Name'] + '**')
             cell.write('"'+ row['Motto'] + '"')
             cell.pyplot(fig)
             plt.close(fig)
