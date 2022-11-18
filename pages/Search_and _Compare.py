@@ -8,6 +8,7 @@ import math
 from Main import read_data
 from sklearn.metrics.pairwise import cosine_similarity
 import plotly.express as px
+from itertools import combinations
 
 
 def make_grid(num_rows,num_cols):
@@ -88,17 +89,7 @@ def main():
             row_no = counter // num_cols
             col_no = counter % num_cols
         
-        if len(df_filtered) == 2:
-            # compare_vectors = df_filtered[attributes].to_numpy()
-            # similarity_score = cosine_similarity(compare_vectors[0].reshape(1,-1), compare_vectors[1].reshape(1,-1))
-            with st.container():
-                _, column_2, _ = st.columns(3)
-                name_1 = df_filtered.iloc[0]['Name']
-                name_2 = df_filtered.iloc[1]['Name']
-                # print(df_cosine_similarity)
-                # print(df_cosine_similarity.columns)
-                column_2.header('Similarity: ' + "{:.3f}".format(df_cosine_similarity[name_1][name_2]))
-
+        
         if len(df_filtered) == 1:
             name = df_filtered.iloc[0]['Name']
             df_most_similar = df_cosine_similarity[name].nlargest(6)[1:]
@@ -110,6 +101,34 @@ def main():
 
             sim_cell.write('Most Different')
             sim_cell.table(df_most_dissimilar.to_frame('Score').sort_values('Score', ascending=False))
+
+        # elif len(df_filtered) == 2:
+        #     # compare_vectors = df_filtered[attributes].to_numpy()
+        #     # similarity_score = cosine_similarity(compare_vectors[0].reshape(1,-1), compare_vectors[1].reshape(1,-1))
+        #     with st.container():
+        #         _, column_2, _ = st.columns(3)
+        #         name_1 = df_filtered.iloc[0]['Name']
+        #         name_2 = df_filtered.iloc[1]['Name']
+        #         # print(df_cosine_similarity)
+        #         # print(df_cosine_similarity.columns)
+        #         column_2.header('Similarity: ' + "{:.3f}".format(df_cosine_similarity[name_1][name_2]))
+
+        
+
+        elif len(df_filtered) >= 2:
+            unique_pairs = combinations(df_filtered['Name'], 2)
+            entries = []
+            for name_1, name_2 in unique_pairs:
+                similarity_score = df_cosine_similarity[name_1][name_2]
+                entries.append((name_1, name_2, similarity_score.round(4)))
+            df_pairwise = pd.DataFrame(entries, columns=['Person 1', 'Person 2', 'Similarity'])
+            with st.container():
+                if len(df_filtered) == 2:
+                    _, column_2, _ = st.columns(3)
+                    column_2.subheader('Similarity: ' + str(df_pairwise.iloc[0]['Similarity']))
+                else:
+                    st.dataframe(df_pairwise.sort_values('Similarity', ascending=False).reset_index(drop=True), use_container_width=True)
+
 
         
 
